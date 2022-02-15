@@ -10,23 +10,29 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public GameObject tilePrefab;
+    public int[] b = {1,2,3,4,-1,6,7,8,9};
+    int[] solution = {7,8,9,4,-1,6,1,2,3};
+
+    public Dictionary<int, Tile> tilesByID = new Dictionary<int, Tile>();
+    public Vector3 emptySlot;
+
+    [Header("Shuffle settings")]
     public int minShuffleNumber = 0;
 
-    public int[] b = {1,2,3,4,-1,6,7,8,9};
-    int[] solution = {6,7,8,4,-1,5,1,2,3};
-
-    [Header("TIMER")]
+    [Header("Timer")]
     public TextMeshProUGUI timerText;
     public float completionTime;
     float timer = 180;
     bool isTimerActive = false;
-    public List<Tile> tiles = new List<Tile>();
-    public Dictionary<int, Tile> tilesByID = new Dictionary<int, Tile>();
-    public Vector3 emptySlot;
 
-    [Header("ICONS")]
+    [Header("Icons")]
     public List<Sprite> AndroidIcons = new List<Sprite>();
     public List<Sprite> IOSIcons = new List<Sprite>();
+
+    [Header("End Game")]
+    public GameObject EndGamePanel;
+    public GameObject VictoryMessage;
+    public GameObject GameOverMessage;
 
     void Awake()
     {
@@ -44,11 +50,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Instantiate tiles
-        InstantiateTiles();
-
-        tiles.AddRange(GetComponentsInChildren<Tile>());
-
         //Shuffle magic square
         ShuffleTiles();
         UpdateBoard();
@@ -78,27 +79,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void InstantiateTiles()
-    {
-        Vector3 tileSize = tilePrefab.GetComponentInChildren<MeshFilter>().sharedMesh.bounds.size;
-        for(int i = 0; i < 8; i++)
-        {
-            Instantiate(tilePrefab, transform.position , Quaternion.identity).transform.SetParent(this.transform);
-        }
-    }
-
     void InitializeTiles()
     {
-        int tileIndex = 0;
+        Debug.Log(b.Length);
         for(int i = 0; i < b.Length; i++)
         {
             if(b[i] != -1)
             {
-                tiles[tileIndex].SetIcon(AndroidIcons[b[i] - 1]);
-                tiles[tileIndex].tileID = b[i] - 1;
-                tilesByID.Add(b[i] - 1, tiles[tileIndex]);
-                tiles[tileIndex].transform.position = new Vector3(i % 3, 0, (int)(i / 3));
-                tileIndex++;
+                Tile newTile = Instantiate(tilePrefab, transform.position , Quaternion.identity).GetComponent<Tile>();
+                newTile.transform.SetParent(transform);
+                newTile.transform.position = new Vector3(i % 3, 0, (int)(i / 3));
+
+                newTile.SetIcon(AndroidIcons[b[i] - 1]);
+                newTile.tileID = b[i] - 1;
+                tilesByID.Add(b[i] - 1, newTile);
             }
         }
     }
@@ -242,14 +236,18 @@ public class GameManager : MonoBehaviour
 
     void GameOver()
     {
-        Debug.Log("GAME OVER!");
         DragController.Instance.isDragAllowed = false;
+        EndGamePanel.SetActive(true);
+        VictoryMessage.SetActive(false);
+        GameOverMessage.SetActive(true);
     }
 
     void Victory()
     {
         isTimerActive = false;
         DragController.Instance.isDragAllowed = false;
-        Debug.Log("VICTORY!");
+        EndGamePanel.SetActive(true);
+        VictoryMessage.SetActive(true);
+        GameOverMessage.SetActive(false);
     }
 }
