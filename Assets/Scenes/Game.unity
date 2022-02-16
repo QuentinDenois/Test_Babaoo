@@ -1262,6 +1262,7 @@ MonoBehaviour:
   movesText: {fileID: 825557446}
   timerText: {fileID: 120305912}
   completionTime: 180
+  AndroidRef: {fileID: 21300000, guid: a5ce78400429048549fd8cd371a58d81, type: 3}
   AndroidIcons:
   - {fileID: 21300000, guid: fef1c957e48ee451db51d6f5d3af180d, type: 3}
   - {fileID: 21300000, guid: 5c4dfe0138dc14ed0b2b1c94ffe410a8, type: 3}
@@ -1272,6 +1273,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e799ff62b8ed449ebb698d1b73d78f40, type: 3}
   - {fileID: 21300000, guid: b0fd7550b6f634af7917925d6a450bde, type: 3}
   - {fileID: 21300000, guid: 78ae05deb675c434ab1956eeacf3ef32, type: 3}
+  IOSRef: {fileID: 21300000, guid: 3d83bcb95296e4523b3a8428c10c8bbe, type: 3}
   IOSIcons:
   - {fileID: 21300000, guid: 7be893626981643c2be0d4062e509000, type: 3}
   - {fileID: 21300000, guid: d1b3a22d1e5634869a5536f954c97a18, type: 3}
@@ -1282,10 +1284,10 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8b894ff9aa5e14c4ab100b57e9b75d76, type: 3}
   - {fileID: 21300000, guid: 782df7ad91d32439e80313d4db69e308, type: 3}
   - {fileID: 21300000, guid: 426013ddfcc3c43d0a966daa201f12f2, type: 3}
+  RefImage: {fileID: 30279349}
   EndGamePanel: {fileID: 1541893184}
   VictoryMessage: {fileID: 177420519}
   GameOverMessage: {fileID: 1899216897}
-  RefImage: {fileID: 30279349}
 --- !u!114 &874779666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1760,7 +1762,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a5ce78400429048549fd8cd371a58d81, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameManager : MonoBehaviour
@@ -27,14 +27,17 @@ public class GameManager : MonoBehaviour
     bool isTimerActive = false;
 
     [Header("Icons")]
+    public Sprite AndroidRef;
     public List<Sprite> AndroidIcons = new List<Sprite>();
+    public Sprite IOSRef;
     public List<Sprite> IOSIcons = new List<Sprite>();
+    public GameObject RefImage;
+    private List<Sprite> icons = new List<Sprite>();
 
     [Header("End Game")]
     public GameObject EndGamePanel;
     public GameObject VictoryMessage;
     public GameObject GameOverMessage;
-    public GameObject RefImage;
 
     void Awake()
     {
@@ -52,6 +55,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Setup depending on the platform
+        SetupFromPlatform();
+
         //Shuffle magic square
         ShuffleTiles();
         UpdateBoard();
@@ -81,6 +87,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void SetupFromPlatform()
+    {
+        if(Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            icons = IOSIcons;
+            RefImage.GetComponentInChildren<Image>().sprite = IOSRef;
+        }
+        else if(Application.platform == RuntimePlatform.Android)
+        {
+            icons = AndroidIcons;
+            RefImage.GetComponentInChildren<Image>().sprite = AndroidRef;
+        }
+        else
+        {
+#if UNITY_EDITOR            
+            icons = AndroidIcons;
+            RefImage.GetComponentInChildren<Image>().sprite = AndroidRef;
+#endif
+        }
+    }
+
     void InitializeTiles()
     {
         for(int i = 0; i < b.Length; i++)
@@ -91,7 +118,7 @@ public class GameManager : MonoBehaviour
                 newTile.transform.SetParent(transform);
                 newTile.transform.position = new Vector3(i % 3, 0, (int)(i / 3));
 
-                newTile.SetIcon(AndroidIcons[b[i] - 1]);
+                newTile.SetIcon(icons[b[i] - 1]);
                 newTile.tileID = b[i] - 1;
                 tilesByID.Add(b[i] - 1, newTile);
             }
