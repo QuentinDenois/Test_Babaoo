@@ -10,15 +10,16 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public GameObject tilePrefab;
-    public int[] b = {1,2,3,4,-1,6,7,8,9};
+    int[] b = {1,2,3,4,-1,6,7,8,9};
     int[] solution = {7,8,9,4,-1,6,1,2,3};
-
+    private int moves = 0;
     public Dictionary<int, Tile> tilesByID = new Dictionary<int, Tile>();
     public Vector3 emptySlot;
 
     [Header("Shuffle settings")]
     public int minShuffleNumber = 0;
-
+    [Header("Moves")]
+    public TextMeshProUGUI movesText;
     [Header("Timer")]
     public TextMeshProUGUI timerText;
     public float completionTime;
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
     public GameObject EndGamePanel;
     public GameObject VictoryMessage;
     public GameObject GameOverMessage;
+    public GameObject RefImage;
 
     void Awake()
     {
@@ -81,7 +83,6 @@ public class GameManager : MonoBehaviour
 
     void InitializeTiles()
     {
-        Debug.Log(b.Length);
         for(int i = 0; i < b.Length; i++)
         {
             if(b[i] != -1)
@@ -160,6 +161,8 @@ public class GameManager : MonoBehaviour
         {
             //Perform movement
             ExchangeTiles(GetTilePosFromID(tileID), GetTilePosFromID(-1));
+            moves++;
+            movesText.text = moves.ToString();
         }
 
         //Check if the mystic square is complete
@@ -238,6 +241,7 @@ public class GameManager : MonoBehaviour
     {
         DragController.Instance.isDragAllowed = false;
         EndGamePanel.SetActive(true);
+        RefImage.SetActive(false);
         VictoryMessage.SetActive(false);
         GameOverMessage.SetActive(true);
     }
@@ -246,8 +250,38 @@ public class GameManager : MonoBehaviour
     {
         isTimerActive = false;
         DragController.Instance.isDragAllowed = false;
+        //Save score if needed
+        RegisterScore();
+
         EndGamePanel.SetActive(true);
+        RefImage.SetActive(false);
         VictoryMessage.SetActive(true);
         GameOverMessage.SetActive(false);
+    }
+
+    void RegisterScore()
+    {
+        float score = completionTime - timer;
+        if(score < PlayerPrefs.GetFloat("FirstScore") || PlayerPrefs.GetFloat("FirstScore") == 0f)
+        {
+            PlayerPrefs.SetFloat("ThirdScore", PlayerPrefs.GetFloat("SecondScore"));
+            PlayerPrefs.SetInt("ThirdMoves", PlayerPrefs.GetInt("SecondMoves"));
+            PlayerPrefs.SetFloat("SecondScore", PlayerPrefs.GetFloat("FirstScore"));
+            PlayerPrefs.SetInt("SecondMoves", PlayerPrefs.GetInt("FirstMoves"));
+            PlayerPrefs.SetFloat("FirstScore", score);
+            PlayerPrefs.SetInt("FirstMoves", moves);
+        }
+        else if(score < PlayerPrefs.GetFloat("SecondScore")  || PlayerPrefs.GetFloat("SecondScore") == 0f)
+        {
+            PlayerPrefs.SetFloat("ThirdScore", PlayerPrefs.GetFloat("SecondScore"));
+            PlayerPrefs.SetInt("ThirdMoves", PlayerPrefs.GetInt("SecondMoves"));
+            PlayerPrefs.SetFloat("SecondScore", score);
+            PlayerPrefs.SetInt("SecondMoves", moves);
+        }
+        else if(score < PlayerPrefs.GetFloat("ThirdScore") || PlayerPrefs.GetFloat("ThirdScore") == 0f)
+        {
+            PlayerPrefs.SetFloat("ThirdScore", score);
+            PlayerPrefs.SetInt("ThirdMoves", moves);
+        }
     }
 }
